@@ -3,14 +3,35 @@ plugins {
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.4.2"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("pl.allegro.tech.build.axion-release") version "1.18.6"
+}
+
+scmVersion {
+	repository {
+		directory = "${layout.projectDirectory}"
+	}
+	tag {
+		prefix.set("demo-")
+	}
+	releaseOnlyOnReleaseBranches = true
+	versionCreator("simple")
+	unshallowRepoOnCI.set(true)
+	branchVersionIncrementer.putAll(
+		mapOf(
+			"breaking/.*" to "incrementMajor",
+			"feature/.*" to "incrementMinor",
+			"fix/.*" to "incrementPatch",
+			"bugfix/.*" to "incrementPatch",
+		),
+	)
 }
 
 group = "com.example"
-version = "0.0.1-SNAPSHOT"
+version = scmVersion.version
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
